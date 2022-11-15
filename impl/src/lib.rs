@@ -24,10 +24,9 @@ pub fn delegate(args: TokenStream, input: TokenStream) -> TokenStream {
 
 fn parse_delegation_args(input: &ItemFn) -> Vec<Ident> {
     input
-        .clone()
         .sig
         .inputs
-        .into_iter()
+        .iter()
         .filter_map(|input| match input {
             FnArg::Typed(PatType {
                 attrs: _,
