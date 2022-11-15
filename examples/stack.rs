@@ -1,4 +1,4 @@
-use delegate::delegate;
+use delegate::{delegate, delegate_call};
 
 pub struct Stack<T> {
     inner: Vec<T>,
@@ -9,8 +9,8 @@ impl<T> Stack<T> {
         Self { inner: Vec::new() }
     }
 
-    #[delegate(inner)]
-    pub fn is_empty(&self) -> bool {}
+    #[delegate_call(inner, is_empty)]
+    pub fn empty(&self) -> bool {}
 
     #[delegate(inner)]
     pub fn len(&self) -> usize {}
@@ -24,7 +24,7 @@ impl<T> Stack<T> {
 
 fn main() {
     let mut stack = Stack::new();
-    assert!(stack.is_empty());
+    assert!(stack.empty());
 
     stack.push(5);
     assert_eq!(stack.len(), 1);

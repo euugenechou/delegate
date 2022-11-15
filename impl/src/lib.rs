@@ -12,12 +12,29 @@ pub fn delegate(args: TokenStream, input: TokenStream) -> TokenStream {
 
     let delegatee = parse_delegatee(&args);
     let delegation = parse_delegation(&input);
-    let delegation_args = parse_delegation_args(&input);
+    let args = parse_delegation_args(&input);
 
-    let delegated_block = quote!({ self.#delegatee.#delegation(#(#delegation_args),*) }).into();
-    let delegated_block = parse_macro_input!(delegated_block as Block);
+    let block = quote!({ self.#delegatee.#delegation(#(#args),*) }).into();
+    let block = parse_macro_input!(block as Block);
 
-    input.block = Box::new(delegated_block);
+    input.block = Box::new(block);
+
+    quote!(#input).into()
+}
+
+#[proc_macro_attribute]
+pub fn delegate_call(args: TokenStream, input: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(args as AttributeArgs);
+    let mut input = parse_macro_input!(input as ItemFn);
+
+    let delegatee = parse_delegatee(&args);
+    let delegation = parse_delegation_call(&args);
+    let args = parse_delegation_args(&input);
+
+    let block = quote!({ self.#delegatee.#delegation(#(#args),*) }).into();
+    let block = parse_macro_input!(block as Block);
+
+    input.block = Box::new(block);
 
     quote!(#input).into()
 }
@@ -52,12 +69,20 @@ fn parse_delegation(input: &ItemFn) -> Ident {
     input.sig.ident.clone()
 }
 
+fn parse_delegation_call(args: &[NestedMeta]) -> Ident {
+    parse_args_ident(args, 1)
+}
+
 fn parse_delegatee(args: &[NestedMeta]) -> Ident {
-    match &args[0] {
+    parse_args_ident(args, 0)
+}
+
+fn parse_args_ident(args: &[NestedMeta], idx: usize) -> Ident {
+    match &args[idx] {
         NestedMeta::Meta(Meta::Path(Path {
             leading_colon: _,
             segments,
         })) => segments[0].ident.clone(),
-        _ => unimplemented!(),
+        _ => unreachable!(),
     }
 }
