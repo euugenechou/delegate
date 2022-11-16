@@ -10,7 +10,7 @@ impl<T> Stack<T> {
     }
 
     #[delegate_call(inner, is_empty)]
-    pub fn empty(&self) -> bool;
+    fn empty(&self) -> bool;
 
     #[delegate(inner)]
     pub fn len(&self) -> usize;

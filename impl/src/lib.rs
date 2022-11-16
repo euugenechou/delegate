@@ -20,7 +20,7 @@ struct DelegatedMethod {
 impl Parse for DelegatedMethod {
     fn parse(input: ParseStream) -> Result<Self> {
         Ok(Self {
-            vis: input.parse::<Visibility>().unwrap_or(Visibility::Inherited),
+            vis: input.parse::<Visibility>()?,
             method: input.parse::<TraitItemMethod>()?,
         })
     }
