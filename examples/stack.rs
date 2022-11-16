@@ -10,16 +10,16 @@ impl<T> Stack<T> {
     }
 
     #[delegate_call(inner, is_empty)]
-    pub fn empty(&self) -> bool {}
+    pub fn empty(&self) -> bool;
 
     #[delegate(inner)]
-    pub fn len(&self) -> usize {}
+    pub fn len(&self) -> usize;
 
     #[delegate(inner)]
-    pub fn push(&mut self, value: T) {}
+    pub fn push(&mut self, value: T);
 
     #[delegate(inner)]
-    pub fn pop(&mut self) -> Option<T> {}
+    pub fn pop(&mut self) -> Option<T>;
 }
 
 fn main() {
